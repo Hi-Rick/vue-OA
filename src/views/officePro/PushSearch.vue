@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-title">
       <div>
-        <span>标题：</span><el-input class="input-style"></el-input>
+        <span>标题：</span><el-input class="input-style" v-model="search"></el-input>
         <span class="span-style">编号：</span><el-input class="input-style"></el-input>
         <el-button type="primary" class="span-style">查询</el-button>
         <el-button type="warning">清空</el-button>
@@ -11,26 +11,31 @@
     </div>
     <div class="table-style">
       <el-table
-        :data="tableData"
+        :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))"
         :header-cell-style="{'text-align':'center', 'background-color' : '#EFEFEF'}">
+        <el-table-column
+          prop="id"
+          label="编号"
+          align="center">
+        </el-table-column>
         <el-table-column
           prop="title"
           label="标题"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="type_exp"
-          label="流程类型"
+          prop="documentType"
+          label="文件类型"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="sendPeople"
+          prop="creator"
           label="发起人"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="time"
-          label="发布时间"
+          prop="date"
+          label="公文日期"
           align="center">
         </el-table-column>
       </el-table>
@@ -39,54 +44,45 @@
 </template>
 
 <script>
+import {select}  from '@/api/index'
   export default {
     name: "PushSearch",
     data() {
       return {
-        tableData: [
-          {
-            title: '周三例行会议',
-            num: 'D463626571',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-06-15',
-            type_exp: '会议'
-          },
-          {
-            title: '大赛通知',
-            num: 'D9979735346',
-            sendPeople: '张贺',
-            applePeople: '邓世强',
-            time: '2020-06-03',
-            type_exp: '通知'
-          },
-          {
-            title: '周四例行会议',
-            num: 'D685634657',
-            sendPeople: '张敏',
-            applePeople: '郑强',
-            time: '2020-05-28',
-            type_exp: '会议'
-          },
-          {
-            title: '人员调配通知',
-            num: 'D79476583',
-            sendPeople: '董成文',
-            applePeople: '刘诗诗',
-            time: '2020-05-16',
-            type_exp: '通知'
-          },
-          {
-            title: '周三例行会议',
-            num: 'D89579345',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-05-05',
-            type_exp: '会议'
-          },
-        ]
+        tableData: [],
+        search: '',
+        defaultProps: {
+          id: 0,
+          documentType: "",
+          number: "",
+          creator: "",
+          title: "",
+          mainDelivery: "",
+          secondDelivery: "",
+          date: "",
+          sign: "",
+          proofreading: "",
+          countersign: "",
+          draft: "",
+          duplicate: "",
+          ifDraft: false,
+          insertTime: "",
+          updateTime: "",
+          body: ""
+        }
       }
-    }
+    },
+    mounted() {
+      this.findDoc()
+    },
+    methods: {
+      findDoc() {
+        select().then(res => {
+          this.tableData = res.data.data.list
+          console.log(res.data.msg)
+        })
+      }
+    },
   }
 </script>
 

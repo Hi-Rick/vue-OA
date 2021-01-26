@@ -3,9 +3,10 @@
     <div class="app-title">
       <div>
         <span>姓名：</span><el-input class="input-style"></el-input>
-        <span class="span-style">手机号：</span><el-input class="input-style"></el-input>
         <el-button type="primary" class="span-style">查询</el-button>
         <el-button type="warning">清空</el-button>
+        <div style="margin-top: 10px"></div>
+        <span style="margin-left: -15px">手机号：</span><el-input class="input-style"></el-input>
       </div>
     </div>
     <div class="content">
@@ -25,6 +26,7 @@
                 <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" default-expand-all node-key="id">
                    <span  slot-scope="{ node, data }">
                      <span @click="ListTable(node, data)" style="font-size: 14px"><i class="el-icon-folder-opened icon-style"></i>{{ node.label}}</span>
+<!--                  <span style="font-size: 14px"><i class="el-icon-folder-opened icon-style"></i>{{ node.label}}</span>-->
                    </span>
                 </el-tree>
               </div>
@@ -94,6 +96,7 @@
     name: "MyAddressBook",
     data() {
       return {
+        counter: 0,
         peopleList: [],
         infoitem: {},
         data: [{
@@ -172,7 +175,7 @@
         }],
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'label',
         }
       };
     },
@@ -199,7 +202,7 @@
       },
       getInfo(item) {
         this.infoitem = item
-      }
+      },
     }
   }
 </script>

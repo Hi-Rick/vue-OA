@@ -2,24 +2,33 @@
     <div class="app-container">
       <div class="app-title">
         <div>
-          <span >姓名：</span><el-input class="input-style" v-model="queryParams.name"></el-input>
-<!--          <span class="span-style">手机号：</span><el-input class="input-style"></el-input>-->
-          <el-button  type="primary" class="span-style" @click="queryInfo" >查询</el-button>
-          <el-button type="warning">清空</el-button>
+          <span style="margin-left: 32px">姓名：</span><el-input placeholder="请输入要查询的姓名" class="input-style" v-model="inputName"></el-input>
+          <el-button type="primary" style="margin-left: 20px" @click="queryName(inputName)">查询</el-button>
+          <br>
+          <div style="margin-top: 20px"></div>
+          <span>部门名称：</span><el-input placeholder="请输入要查询的部门名称" class="input-style" v-model="inputDepartment"></el-input>
+          <el-button type="warning" style="margin-left: 20px" @click="querydepartment(inputDepartment)">查询</el-button>
         </div>
       </div>
       <div class="content">
+        <div class="content-button">
+          <el-button type="primary" style="margin-left: 60%" plain>管理我的部门</el-button>
+          <el-button type="success" plain>管理我的通讯录</el-button>
+        </div>
+        <div style="margin-top: 20px"></div>
         <el-row :gutter="20">
           <el-col :span="5">
             <div class="left-content">
               <div class="left-title">
-                <span>分组列表</span>
+                <span style="position: center">部门列表</span>
+                <el-button icon="el-icon-delete" size="mini" style="margin-left: 10px" @click="isShow = !isShow" round></el-button>
               </div>
               <div class="tree-people">
-                <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" default-expand-all node-key="id">
+                <el-tree :data="data" :props="defaultProps" default-expand-all node-key="id">
                   <span  slot-scope="{ node, data }">
-                     <span @click="ListTable(node, data)" style="font-size: 14px"><i class="el-icon-folder-opened icon-style"></i>{{ node.label}}</span>
-                   </span>
+                     <span style="font-size: 14px"  @click="querydepartment(node.label)"><i class="el-icon-folder-opened icon-style" ></i>{{data.id}}{{ node.label}}</span>
+                    <el-button v-show="isShow" icon="el-icon-close" size="mini" style="margin-left: 10px" @click="deletetree(data.id)" circle></el-button>
+                  </span>
                 </el-tree>
               </div>
             </div>
@@ -28,12 +37,16 @@
             <div class="left-content">
               <div class="left-title">
                 <span>人员列表</span>
+                <el-button icon="el-icon-delete" size="mini" style="margin-left: 10px" @click="isShow1 = !isShow1" round></el-button>
               </div>
-              <div class="name-list">
-                <div v-for="(item, index) in peopleList" :key="index" class="name-style" @click="getInfo(item)">
-                  <span>{{item.name}}</span>
-                </div>
-              </div>
+
+              <el-tree :data="peopleList" :props="defaultProps">
+                <span slot-scope="{node, data}">
+                <span style="font-size: 14px" @click="queryName(data.name)"><i class="el-icon-user icon-style" ></i>{{data.name}}</span>
+                <el-button v-show="isShow1" icon="el-icon-close" size="mini" @click="deletePerson(data.id)" circle></el-button>
+                </span>
+              </el-tree>
+
             </div>
           </el-col>
           <el-col :span="15">
@@ -82,94 +95,27 @@
 
 <script>
   import {searchPeople} from '../../../api/remoteSearch'
-  import {findAllDepartment,selectByDepartment,selectByName} from '@/api/index'
+  import {findAllDepartment,selectByDepartment,selectByName,insertDepartment,deleteDepartment,modifyDepartment,deleteAddress} from '@/api/index'
     export default {
         name: "AddressBook",
 
       data() {
         return {
           data:[],
-          peopleList: [],
           infoitem: {},
+          peopleList: [],
           queryParams: {
             name:undefined,
-
           },
-          data1: [{
-            label: 'xxx科学技术大学',
-            icon: 'el-icon-phone',
-            children: [{
-              label: '院领导',
-              // children: [{
-              //   label: '三级 1-1-1'
-              // }]
-            },{
-              label: '党委、院长办公室',
-            },{
-              label: '国际教育交流中心',
-            },{
-              label: '宣传部',
-            },{
-              label: '纪检处',
-            },{
-              label: '工会',
-            },{
-              label: '教务处',
-            },{
-              label: '人事处',
-            },{
-              label: '财务处',
-            },{
-              label: '学工部',
-            },{
-              label: '后勤管理处',
-            },{
-              label: '招生就业指导中心',
-            },{
-              label: '老年教育部',
-            },{
-              label: '材料工程系',
-            },{
-              label: '汽车工程系',
-            },{
-              label: '智能制造学院',
-            },{
-              label: '环境与化学工程系',
-            },{
-              label: '工商管理系',
-            },{
-              label: '经济贸易系',
-            },{
-              label: '计算机技术系',
-            },{
-              label: '建筑工程系',
-            },{
-              label: '基础课教学部',
-            },{
-              label: '思想政治与公共体育教学',
-            },{
-              label: '工业基础教学部',
-            },{
-              label: '成教部',
-            },{
-              label: '信息中心',
-            },{
-              label: '应用技术研发中心',
-            },{
-              label: '高等职业教育研究所',
-            },{
-              label: '安全工作处',
-            },{
-              label: '教学督导办公室',
-            },{
-              label: '行政督导办公室',
-            },{
-              label: '专家',
-            },{
-              label: '马克思主义学院',
-            }
-            ],
-          }],
+          counter: 0,
+          inputValue: '',
+          inputName: '',
+          inputDepartment: '',
+          selectDepartment: '',
+          isShow: false,
+          isShow1: false,
+
+          //2. 什么时候需要props
           defaultProps: {
             children: 'children',
             label: 'department'
@@ -182,44 +128,96 @@
       methods: {
           gettree(){
             findAllDepartment().then( res => {
-              console.log('tree',res)
+              // console.log('tree',res)
               this.data = res.data.data.list
             })
           },
         handleNodeClick(data) {
           console.log(data);
         },
-        ListTable(node, data) {
-          console.log(node)
-          console.log(data)
-          // if (data.label === '职称评定') {
-          //   this.tableDatas = this.tableData
-          //   console.log(this.tableDatas)
-          // }
-          this.getPeople(data.department)
-        },
-        queryInfo(){
-          selectByName(this.queryParams).then(res => {
-            console.log('111')
-            console.log(res)
-              this.infoitem = res.data.data.list[0]
-          })
-        },
-        getPeople(val) {
-          let data = {
-            department: val
-          }
-          selectByDepartment(data).then((res) => {
-            console.log('liebiao',res)
-            this.peopleList =  res.data.data.list
-            console.log(this.peopleList.name)
-          })
-        },
-        getInfo(item) {
-          console.log('item',item)
-          this.infoitem = item
-        }
 
+        queryInfo(){
+            selectByName(this.queryParams).then(res => {
+              console.log(res)
+              this.infoitem = res.data.data.list[0]
+              this.queryParams = ''
+            })
+        },
+        queryName(name){
+            let data = {
+              name: name
+            }
+            if(name === '') {
+              alert('要查询的名字不能为空!')
+            }
+            else {
+              selectByName(data).then(res => {
+                this.infoitem = res.data.data.list[0]
+                this.inputName = ''
+              })
+            }
+        },
+        // clearinput() {
+        //   this.infoitem=''
+        // },
+        deletetree(id) {
+            console.log(id)
+          let data = {
+            id: id
+          }
+          deleteDepartment(data).then(res => {
+            console.log(res.data.msg)
+            findAllDepartment()
+          })
+          // findAllDepartment()
+        },
+        inserttree(){
+            let data = {
+              department: this.inputValue
+            }
+            if(this.inputValue === '')alert('输入不能为空！')
+          else {
+            insertDepartment(data).then(res => {
+              console.log(res.data.msg)
+              findAllDepartment()
+            })
+          }
+          this.inputValue = ''
+        },
+        modifytree(id) {
+
+            let data = {
+              department: this.inputValue,
+              id: id
+            }
+          modifyDepartment(data).then(res =>{
+            console.log(res.data.msg)
+            findAllDepartment()
+          })
+        },
+        querydepartment(name){
+            let data = {
+              department: name
+            }
+            selectByDepartment(data).then(res => {
+              this.peopleList = res.data.data.list
+              for(let i = 0; i < this.peopleList.length; i ++)
+                console.log(this.peopleList[i].name)
+              //   alert(this.peopleList[i].name)
+              this.inputDepartment = ''
+            })
+          // }
+        },
+        deletePerson(id) {
+          let data = {
+            id: id
+          }
+            deleteAddress(data).then(res => {
+              console.log(res.data.msg)
+              alert('删除成功!')
+              // getAllAddress()
+            })
+        },
       }
     }
 </script>

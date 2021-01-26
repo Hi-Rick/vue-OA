@@ -43,53 +43,27 @@
 </template>
 
 <script>
+import {findConferenceRoomByName,selectByData,findAllConferenceRoom,deleteRoom,modifyRoomInfo,addConferenceRoom,selectByWeek} from '@/api/index'
   export default {
     name: "MyReserve",
     data() {
       return {
-        tableData: [
-          {
-            title: '周三例行会议',
-            num: 'D463626571',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-06-15',
-            type_exp: '会议'
-          },
-          {
-            title: '大赛通知',
-            num: 'D9979735346',
-            sendPeople: '张贺',
-            applePeople: '邓世强',
-            time: '2020-06-03',
-            type_exp: '通知'
-          },
-          {
-            title: '周四例行会议',
-            num: 'D685634657',
-            sendPeople: '张敏',
-            applePeople: '郑强',
-            time: '2020-05-28',
-            type_exp: '会议'
-          },
-          {
-            title: '人员调配通知',
-            num: 'D79476583',
-            sendPeople: '董成文',
-            applePeople: '刘诗诗',
-            time: '2020-05-16',
-            type_exp: '通知'
-          },
-          {
-            title: '周三例行会议',
-            num: 'D89579345',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-05-05',
-            type_exp: '会议'
-          },
-        ],
-        value1: ''
+        tableData: [],
+        value1: '',
+        defaultProps: {
+
+        },
+      }
+    },
+    mounted() {
+      this.showConference()
+    },
+    methods: {
+      showConference() {
+        selectByWeek().then(res => {
+          this.tableData = res.data.data.list
+          console.log(res.data.data.list)
+        })
       }
     }
   }

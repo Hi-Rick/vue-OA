@@ -32,7 +32,6 @@
           label="公文类型"
           align="center">
         </el-table-column>
-
         <el-table-column
           label="操作"
           align="center">

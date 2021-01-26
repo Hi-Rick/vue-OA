@@ -2,10 +2,10 @@
   <div class="app-container">
     <div class="app-title">
       <div>
-        <span>标题：</span><el-input class="input-style"></el-input>
-        <span class="span-style">类型：</span><el-input class="input-style"></el-input>
-        <el-button type="primary" class="span-style">查询</el-button>
-        <el-button type="warning">清空</el-button>
+        <span>角色ID：</span><el-input class="input-style" v-model="userid"></el-input>
+        <span class="span-style">角色：</span><el-input class="input-style" v-model="username"></el-input>
+        <el-button type="primary" class="span-style" @click="findNotRead(userid,username)">查询</el-button>
+        <el-button type="warning" @click="userid = ''; username = ''">清空</el-button>
       </div>
 
     </div>
@@ -19,27 +19,27 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="num"
-          label="文号"
+          prop="number"
+          label="文件号"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="sendPeople"
-          label="发件人"
+          prop="mainDelivery"
+          label="主送"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="applePeople"
-          label="收件人"
+          prop="secondDelivery"
+          label="抄送"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="time"
-          label="收件时间"
+          prop="date"
+          label="公文日期"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="type_exp"
+          prop="documentType"
           label="类型"
           align="center">
         </el-table-column>
@@ -49,13 +49,13 @@
           <template slot-scope="scope">
             <el-button
               type="text"
-              size="small" @click="cancel_submit">
-              移除
+              size="small" @click="edit_show(scope.row)">
+              编辑
             </el-button>
             <el-button
               type="text"
-              size="small" @click="edit_show(scope.row)">
-              编辑
+              size="small" @click="cancel_submit">
+              移除
             </el-button>
           </template>
         </el-table-column>
@@ -71,101 +71,103 @@
             <td class="table-style-td2 color-bg-one" align="center">{{title}}</td>
           </tr>
           <tr>
-            <td class="table-style-td1 color-bg-two" align="center">文号：</td>
-            <td class="table-style-td2 color-bg-two" align="center">{{num}}</td>
+            <td class="table-style-td1 color-bg-two" align="center">文件号：</td>
+            <td class="table-style-td2 color-bg-two" align="center">{{number}}</td>
           </tr>
           <tr>
-            <td class="table-style-td1 color-bg-one" align="center">发件人：</td>
-            <td class="table-style-td2 color-bg-one" align="center">{{sendPeople}}</td>
+            <td class="table-style-td1 color-bg-two" align="center">文件类型：</td>
+            <td class="table-style-td2 color-bg-two" align="center">{{documentType}}</td>
           </tr>
           <tr>
-            <td class="table-style-td1 color-bg-two" align="center">发件人：</td>
-            <td class="table-style-td2 color-bg-two" align="center">{{applePeople}}</td>
+            <td class="table-style-td1 color-bg-one" align="center">主送：</td>
+            <td class="table-style-td2 color-bg-one" align="center">{{mainDelivery}}</td>
           </tr>
           <tr>
-            <td class="table-style-td1 color-bg-two" align="center">收件时间：</td>
-            <td class="table-style-td2 color-bg-two" align="center">{{time}}</td>
+            <td class="table-style-td1 color-bg-two" align="center">抄送：</td>
+            <td class="table-style-td2 color-bg-two" align="center">{{secondDelivery}}</td>
           </tr>
           <tr>
-            <td class="table-style-td1 color-bg-two" align="center">类型：</td>
-            <td class="table-style-td2 color-bg-two" align="center">{{type_exp}}</td>
+            <td class="table-style-td1 color-bg-two" align="center">公文日期：</td>
+            <td class="table-style-td2 color-bg-two" align="center">{{date}}</td>
           </tr>
         </table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">撤 销</el-button>
-        <el-button type="primary" @click="dialogVisible = false">批 复</el-button>
+        <el-button type="primary" @click="modifyApproval">批 复</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import {findNotApproveDocument,addProcess,select,modifyProcess}  from '@/api/index'
   export default {
     name: "AwaitReadDoc",
     data() {
       return {
-        tableData: [
-          {
-            title: '周三例行会议',
-            num: 'D463626571',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-06-15',
-            type_exp: '会议'
-          },
-          {
-            title: '大赛通知',
-            num: 'D9979735346',
-            sendPeople: '张贺',
-            applePeople: '邓世强',
-            time: '2020-06-03',
-            type_exp: '通知'
-          },
-          {
-            title: '周四例行会议',
-            num: 'D685634657',
-            sendPeople: '张敏',
-            applePeople: '郑强',
-            time: '2020-05-28',
-            type_exp: '会议'
-          },
-          {
-            title: '人员调配通知',
-            num: 'D79476583',
-            sendPeople: '董成文',
-            applePeople: '刘诗诗',
-            time: '2020-05-16',
-            type_exp: '通知'
-          },
-          {
-            title: '周三例行会议',
-            num: 'D89579345',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-05-05',
-            type_exp: '会议'
-          },
-        ],
+        userid: 0,
+        username: '',
+        tableData: [],
         title: '',
-        num: '',
-        sendPeople: '',
-        applePeople: '',
-        time: '',
-        type_exp: '',
-        dialogVisible: false
+        number: '',
+        mainDelivery: '',
+        secondDelivery: '',
+        insertTime: '',
+        documentType: '',
+        dialogVisible: false,
+
+        defaultProps: {
+          id: 0,
+          documentType: "",
+          number: "",
+          creator: "",
+          title: "",
+          mainDelivery: "",
+          secondDelivery: "",
+          date: "",
+          sign: "",
+          proofreading: "",
+          countersign: "",
+          draft: "",
+          duplicate: "",
+          ifDraft: false,
+          insertTime: "",
+          updateTime: "",
+          body: "",
+          modelOrder: '',
+          order: ''
+        },
+
+        modify_App: {
+          documentType: "",
+          id: 0,
+          insertTime: "",
+          modelOrder: "",
+          order: "",
+          updateTime: "",
+          date: "",
+        },
       }
+    },
+    mounted() {
+      this.findDoc()
     },
     methods: {
       edit_show(row) {
         console.log(row)
         this.dialogVisible = true
         this.title = row.title
-        this.num = row.num
-        this.sendPeople = row.sendPeople
-        this.applePeople = row.applePeople
-        this.time = row.time
-        this.type_exp = row.type_exp
+        this.number = row.number
+        this.mainDelivery = row.mainDelivery
+        this.secondDelivery = row.secondDelivery
+        this.documentType = row.documentType
+        this.date = row.date
+        this.modify_App.documentType = row.documentType
+        this.modify_App.id = row.id
+        this.modify_App.order = row.secondDelivery
+        this.modify_App.modelOrder = row.mainDelivery
+        this.modify_App.date = row.date
       },
       cancel_submit() {
         this.$confirm('此操作将移除该条信息, 是否继续?', '提示', {
@@ -183,7 +185,36 @@
             message: '已取消删除'
           })
         })
-      }
+      },
+      findNotRead(id, name) {
+        let data = {
+          userId: id,
+          role: name
+        }
+        findNotApproveDocument(data).then(res => {
+          this.tableData = res.data.list
+          console.log(res.data.msg)
+        })
+      },
+      agreeProcess() {
+        // json 要传的数据 待编辑
+        addProcess(data).then(res => {
+          console.log(res.data.msg)
+        })
+      },
+      findDoc() {
+        select().then(res => {
+          this.tableData = res.data.data.list
+          console.log(res.data.msg)
+        })
+      },
+      // 500
+      modifyApproval() {
+        this.modify_App.id = parseInt(this.modify_App.id)
+        modifyProcess(this.modify_App).then(res => {
+          console.log(res.data.msg)
+        })
+      },
     }
   }
 </script>

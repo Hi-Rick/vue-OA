@@ -166,7 +166,8 @@ export const constantRoutes = [
         path: '/RoomReserve',
         component: () => import('@/views/officeManage/meetingManage/RoomReserve'),
         name: 'RoomReserve',
-        meta: { title: '会议室预定', affix: false }
+        meta: { title: '' +
+            '会议室管理', affix: false }
       },
       {
         path: '/MyReserve',
@@ -179,7 +180,13 @@ export const constantRoutes = [
         component: () => import('@/views/officeManage/meetingManage/MyMeeting'),
         name: 'MyMeeting',
         meta: { title: '我的会议', affix: false }
-      }
+      },
+      // {
+      //   path: '/ManageMeeting',
+      //   component: () => import('@/views/officeManage/meetingManage/ManageMeeting'),
+      //   name: 'ManageMeeting',
+      //   meta: { title: '会议室管理', affix: false }
+      // },
     ]
   },
   // {
@@ -244,27 +251,39 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/AddressBook',
+    path: '/AddressBook1',
     component: Layout,
-    // name: 'addressBook',
-    // redirect: '/AddressBook',
-    // meta: {
-    //   title: '通讯录',
-    //   icon: 'addressBook',
-    // },
-    children: [
+    name: 'addressBook',
+    redirect: '/AddressBook',
+    meta: {
+      title: '通讯录',
+      icon: 'addressBook',
+    },
+      children: [
       {
         path: '/AddressBook',
         component: () => import('@/views/subsidiaryOffice/addressBook/AddressBook'),
         name: 'AddressBook',
-        meta: { title: '通讯录', icon: 'addressBook', affix: false }
+        meta: { title: '通讯录', affix: false }
+      },
+    //   {
+    //     path: '/MyAddressBook',
+    //     component: () => import('@/views/subsidiaryOffice/addressBook/MyAddressBook'),
+    //     name: 'MyAddressBook',
+    //     meta: { title: '个人通讯录', affix: false }
+    //   },
+      {
+        path: '/EditDepartment',
+        component: () => import('@/views/subsidiaryOffice/addressBook/EditDepartment'),
+        name: 'EditDepartment',
+        meta: { title: '部门管理', affix: false }
       },
       // {
-      //   path: '/MyAddressBook',
-      //   component: () => import('@/views/subsidiaryOffice/addressBook/MyAddressBook'),
-      //   name: 'MyAddressBook',
-      //   meta: { title: '个人通讯录', affix: false }
-      // }
+      //   path: '/EditAddressBook',
+      //   component: () => import('@/views/subsidiaryOffice/addressBook/EditAddressBook'),
+      //   name: 'EditAddressBook',
+      //   meta: { title: '通讯录管理', affix: false }
+      // },
     ]
   },
   {
@@ -289,6 +308,54 @@ export const constantRoutes = [
         name: 'MyFile',
         meta: { title: '个人文件', affix: false }
       }
+    ]
+  },
+  {
+    path: '/characterManage',
+    component: Layout,
+    name: 'characterManage',
+    redirect: '/character',
+    meta: {
+      title: '角色管理',
+      icon: 'user',
+    },
+    children: [
+      {
+        path: '/character',
+        component: () => import('@/views/characterManage/character'),
+        name: 'character',
+        meta: { title: '角色管理', affix: false }
+      },
+      // {
+      //   path: '/MyFile',
+      //   component: () => import('@/views/subsidiaryOffice/docManage/MyFile'),
+      //   name: 'MyFile',
+      //   meta: { title: '个人文件', affix: false }
+      // }
+    ]
+  },
+  {
+    path: '/userManage/user1',
+    component: Layout,
+    name: 'userManage',
+    redirect: '/userManage/user1',
+    meta: {
+      title: '用户管理',
+      icon: 'user',
+    },
+    children: [
+      {
+        path: '/userManage',
+        component: () => import('@/views/userManage/user1/user'),
+        name: 'user',
+        meta: { title: '用户管理', affix: false }
+      },
+      // {
+      //   path: '/MyFile',
+      //   component: () => import('@/views/subsidiaryOffice/docManage/MyFile'),
+      //   name: 'MyFile',
+      //   meta: { title: '个人文件', affix: false }
+      // }
     ]
   },
   // {

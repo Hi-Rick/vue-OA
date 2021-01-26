@@ -2,9 +2,9 @@
   <div class="app-container">
     <div class="app-title">
       <div>
-        <span>标题：</span><el-input class="input-style"></el-input>
-        <span class="span-style">文号：</span><el-input class="input-style"></el-input>
-        <el-button type="primary" class="span-style">查询</el-button>
+        <span>角色ID：</span><el-input class="input-style" placeholder="输入ID查询已办文件" v-model="userid"></el-input>
+<!--        <span class="span-style">文号：</span><el-input class="input-style"></el-input>-->
+        <el-button type="primary" style="margin-left: 20px" @click="findApproved(userid)">查询</el-button>
         <el-button type="warning">清空</el-button>
       </div>
 
@@ -14,33 +14,38 @@
         :data="tableData"
         :header-cell-style="{'text-align':'center', 'background-color' : '#EFEFEF'}">
         <el-table-column
+          prop="num"
+          label="公文号"
+          align="center">
+        </el-table-column>
+        <el-table-column
           prop="title"
           label="标题"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="num"
-          label="文号"
+          prop="type_exp"
+          label="类型"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="applePeople"
+          label="公文创建人"
           align="center">
         </el-table-column>
         <el-table-column
           prop="sendPeople"
-          label="发件人"
+          label="审批人"
           align="center">
         </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="applePeople"-->
-          <!--label="收件人"-->
-          <!--align="center">-->
-        <!--</el-table-column>-->
         <el-table-column
           prop="time"
-          label="收件时间"
+          label="更新时间"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="type_exp"
-          label="类型"
+          prop="result"
+          label="审批结果"
           align="center">
         </el-table-column>
         <el-table-column
@@ -60,26 +65,28 @@
 </template>
 
 <script>
+import {findFinishApprove}  from '@/api/index'
   export default {
     name: "WorkedDoc",
     data() {
       return {
-        tableData: [
-          {
-            title: '周三例行会议',
-            num: 'D463626571',
-            sendPeople: '张红',
-            applePeople: '郑强',
-            time: '2020-06-15',
-            type_exp: '会议'
-          },
+        tableData: [{
+          title: '周三例行会议',
+          num: 'D463626571',
+          sendPeople: '张红',
+          applePeople: '郑强',
+          time: '2020-06-15',
+          type_exp: '会议',
+          result: '同意'
+        },
           {
             title: '大赛通知',
             num: 'D9979735346',
             sendPeople: '张贺',
             applePeople: '邓世强',
             time: '2020-06-03',
-            type_exp: '通知'
+            type_exp: '通知',
+            result: '不同意'
           },
           {
             title: '周四例行会议',
@@ -87,7 +94,8 @@
             sendPeople: '张敏',
             applePeople: '郑强',
             time: '2020-05-28',
-            type_exp: '会议'
+            type_exp: '会议',
+            result: '不同意'
           },
           {
             title: '人员调配通知',
@@ -95,7 +103,8 @@
             sendPeople: '董成文',
             applePeople: '刘诗诗',
             time: '2020-05-16',
-            type_exp: '通知'
+            type_exp: '通知',
+            result: '同意'
           },
           {
             title: '周三例行会议',
@@ -103,9 +112,10 @@
             sendPeople: '张红',
             applePeople: '郑强',
             time: '2020-05-05',
-            type_exp: '会议'
-          },
-        ]
+            type_exp: '会议',
+            result: '同意'
+          },],
+        userid: null,
       }
     },
     methods: {
@@ -125,7 +135,15 @@
             message: '已取消删除'
           })
         })
-      }
+      },
+      findApproved(id) {
+        let data = {
+          userId: id
+        }
+        findFinishApprove(data).then(res => {
+          this.tableData = res.data.data.list
+        })
+      },
     }
   }
 </script>

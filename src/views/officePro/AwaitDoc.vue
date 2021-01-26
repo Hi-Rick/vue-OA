@@ -20,17 +20,17 @@
           </el-table-column>
           <el-table-column
             prop="number"
-            label="文号"
+            label="公文号"
             align="center">
           </el-table-column>
           <el-table-column
             prop="creator"
-            label="发件人"
+            label="创建人"
             align="center">
           </el-table-column>
           <el-table-column
             prop="mainDelivery"
-            label="收件人"
+            label="审批人"
             align="center">
           </el-table-column>
           <el-table-column
@@ -49,13 +49,13 @@
             <template slot-scope="scope">
               <el-button
                 type="text"
-                size="small" @click="cancel_submit">
-                移除
+                size="small" @click="edit_show(scope.row)">
+                编辑
               </el-button>
               <el-button
                 type="text"
-                size="small" @click="edit_show(scope.row)">
-                编辑
+                size="small" @click="cancel_submit">
+                移除
               </el-button>
             </template>
           </el-table-column>
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {getdaibanList,getdocselect}  from '@/api/index'
+import {getdaibanList,getdocselect,select}  from '@/api/index'
     export default {
         name: "AwaitDoc",
       data() {
@@ -112,48 +112,6 @@ import {getdaibanList,getdocselect}  from '@/api/index'
 
             },
             tableData:[],
-            tableData1: [
-              {
-                title: '周三例行会议',
-                num: 'D463626571',
-                sendPeople: '张红',
-                applePeople: '郑强',
-                time: '2020-06-15',
-                type_exp: '会议'
-              },
-              {
-                title: '大赛通知',
-                num: 'D9979735346',
-                sendPeople: '张贺',
-                applePeople: '邓世强',
-                time: '2020-06-03',
-                type_exp: '通知'
-              },
-              {
-                title: '周四例行会议',
-                num: 'D685634657',
-                sendPeople: '张敏',
-                applePeople: '郑强',
-                time: '2020-05-28',
-                type_exp: '会议'
-              },
-              {
-                title: '人员调配通知',
-                num: 'D79476583',
-                sendPeople: '董成文',
-                applePeople: '刘诗诗',
-                time: '2020-05-16',
-                type_exp: '通知'
-              },
-              {
-                title: '周三例行会议',
-                num: 'D89579345',
-                sendPeople: '张红',
-                applePeople: '郑强',
-                time: '2020-05-05',
-                type_exp: '会议'
-              },
-            ],
             title: '',
             num: '',
             sendPeople: '',
@@ -164,9 +122,15 @@ import {getdaibanList,getdocselect}  from '@/api/index'
           }
       },
       mounted() {
-          this.getlist()
+          this.findDoc()
       },
       methods: {
+        findDoc() {
+          select().then(res => {
+            this.tableData = res.data.data.list
+            console.log(res.data.msg)
+          })
+        },
         getlist(){
           getdaibanList({
             role:'管理员',
